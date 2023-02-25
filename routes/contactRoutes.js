@@ -10,6 +10,7 @@ const {
   updateContact,
 } = require("../controllers/contactController");
 
+
 router.route("/").get(getContact).post(createContact);
 router
   .route("/:id")
