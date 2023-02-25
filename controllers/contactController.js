@@ -1,11 +1,13 @@
 const asyncHandler = require("express-async-handler");
+const Contact = require("../models/contactModel");
 
 //@desc Get all contacts
 //@route GET /api/contacts
 //@access Public
 
 const getContact = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: " Get all Contacts!" });
+  const contacts = await Contact.find();
+  res.status(200).json(contacts);
 });
 
 //@desc Create a new contact
@@ -18,7 +20,12 @@ const createContact = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("All fields are required");
   }
-  res.status(201).json({ message: "Create a new Contacts" });
+  const contact = await Contact.create({
+    name,
+    email,
+    phone,
+  });
+  res.status(201).json(contact);
 });
 
 //@desc Get a specific contact by Id
@@ -26,7 +33,12 @@ const createContact = asyncHandler(async (req, res) => {
 //@access Public
 
 const getContactById = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: `Get Contact ${req.params.id}!` });
+  const contact = await Contact.findById(req.params.id);
+  if (!contact) {
+    res.status(404);
+    throw new Error("Contact not found");
+  }
+  res.status(200).json(contact);
 });
 
 //@desc Delete a contact
@@ -34,7 +46,14 @@ const getContactById = asyncHandler(async (req, res) => {
 //@access Public
 
 const deleteContact = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: `Delete Contact ${req.params.id}!` });
+  const contact = await Contact.findById(req.params.id);
+  if (!contact) {
+    res.status(404);
+    throw new Error("Contact not found");
+  }
+  // await Contact.findByIdAndDelete(req.params.id);
+  await Contact.remove();
+  res.status(200).json(contact);
 });
 
 //@desc Update a contact
@@ -42,7 +61,17 @@ const deleteContact = asyncHandler(async (req, res) => {
 //@access Public
 
 const updateContact = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: `Update Contact ${req.params.id}!` });
+  const contact = await Contact.findById(req.params.id);
+  if (!contact) {
+    res.status(404);
+    throw new Error("Contact not found");
+  }
+  const updatedContact = await Contact.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
+  res.status(200).json(updatedContact);
 });
 
 module.exports = {
