@@ -1,6 +1,9 @@
 const express = require("express");
-const errorHandler = require("./controllers/middleware/errorHandler");
+const errorHandler = require("./middleware/errorHandler");
 const dotenv = require("dotenv").config();
+const connectDb = require("./config/dbConnect");
+
+connectDb();
 
 const app = express();
 
