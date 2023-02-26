@@ -9,6 +9,9 @@ const {
   deleteContact,
   updateContact,
 } = require("../controllers/contactController");
+const validateToken = require("../middleware/validateTokenHandler");
+
+router.use(validateToken); // This middleware will be applied to all routes in this file
 
 router.route("/").get(getContact).post(createContact);
 router
